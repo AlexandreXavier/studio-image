@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# testing
+test-results/
+
+# IDE
+.vscode/
+.windsurf/
+.agents/
+
+# OS
+.DS_Store
+
+# logs
+*.log

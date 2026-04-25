@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-PT" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Despesas × Xani</title>
+<link rel="stylesheet" href="xani-tokens.css"/>
+<link rel="stylesheet" href="app.css"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="data.js"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="pages-a.jsx"></script>
+<script type="text/babel" src="pages-b.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const NAV = [
+  { id: 'home', label: 'Home', icon: 'home' },
+  { id: 'visao-geral', label: 'Visão', icon: 'dashboard' },
+  { id: 'transacoes', label: 'Trans.', icon: 'list' },
+  { id: 'agendadas', label: 'Agend.', icon: 'clock' },
+  { id: 'contas', label: 'Contas', icon: 'wallet' },
+  { id: 'orcamentos', label: 'Orç.', icon: 'target' },
+  { id: 'dividas', label: 'Dívidas', icon: 'hand' },
+  { id: 'graficos', label: 'Gráfic.', icon: 'chart' },
+  { id: 'calendario', label: 'Calend.', icon: 'calendar' },
+  { id: 'preferencias', label: 'Pref.', icon: 'settings' },
+];
+
+const TITLES = {
+  'home': { eyebrow: '/ home', title: 'Despesas' },
+  'visao-geral': { eyebrow: '/ visão-geral', title: 'Visão geral' },
+  'transacoes': { eyebrow: '/ transações', title: 'Transações' },
+  'agendadas': { eyebrow: '/ agendadas', title: 'Agendadas' },
+  'contas': { eyebrow: '/ contas', title: 'Contas' },
+  'orcamentos': { eyebrow: '/ orçamentos', title: 'Orçamentos' },
+  'dividas': { eyebrow: '/ dívidas', title: 'Dívidas' },
+  'graficos': { eyebrow: '/ gráficos', title: 'Gráficos' },
+  'calendario': { eyebrow: '/ calendário', title: 'Calendário' },
+  'preferencias': { eyebrow: '/ preferências', title: 'Preferências' },
+};
+
+function App() {
+  const [page, setPage] = useState('visao-geral');
+  const [transacoes, setTransacoes] = useState(window.TRANSACOES);
+  const [contas, setContas] = useState(window.CONTAS);
+  const [orcamentos, setOrcamentos] = useState(window.ORCAMENTOS);
+  const [agendadas, setAgendadas] = useState(window.AGENDADAS);
+  const [dividas] = useState(window.DIVIDAS);
+
+  const [tweaks, setTweaks] = window.useTweaks
+    ? window.useTweaks(/*EDITMODE-BEGIN*/{
+      "theme": "light",
+      "accent": "#ff6b01"
+    }/*EDITMODE-END*/)
+    : [{theme:'dark', accent:'#ff6b01'}, () => {}];
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', tweaks.theme);
+    if (tweaks.theme === 'dark') {
+      document.documentElement.style.setProperty('--color-accent-rgb', hexToRgb(tweaks.accent));
+    } else {
+      // light theme: if accent is still the dark orange default, let CSS use light blue
+      if (tweaks.accent === '#ff6b01') {
+        document.documentElement.style.removeProperty('--color-accent-rgb');
+      } else {
+        document.documentElement.style.setProperty('--color-accent-rgb', hexToRgb(tweaks.accent));
+      }
+    }
+  }, [tweaks.theme, tweaks.accent]);
+
+  const saveTx = (data, editing) => {
+    if (editing) {
+      setTransacoes(txs => txs.map(t => t.id === editing.id ? { ...t, ...data } : t));
+    } else {
+      const id = Math.max(0, ...transacoes.map(t => t.id)) + 1;
+      setTransacoes(txs => [{ id, ...data }, ...txs]);
+      // Adjust account balances
+      setContas(cs => cs.map(c => {
+        if (c.id === data.conta_id) {
+          const delta = data.tipo === 'receita' ? data.valor : data.tipo === 'despesa' ? -data.valor : -data.valor;
+          return { ...c, saldo: c.saldo + delta };
+        }
+        if (data.tipo === 'transferencia' && c.id === data.conta_destino_id) {
+          return { ...c, saldo: c.saldo + data.valor };
+        }
+        return c;
+      }));
+    }
+  };
+  const delTx = (id) => {
+    const t = transacoes.find(x => x.id === id);
+    if (!t) return;
+    setTransacoes(txs => txs.filter(x => x.id !== id));
+    setContas(cs => cs.map(c => {
+      if (c.id === t.conta_id) {
+        const delta = t.tipo === 'receita' ? -t.valor : t.tipo === 'despesa' ? t.valor : t.valor;
+        return { ...c, saldo: c.saldo + delta };
+      }
+      if (t.tipo === 'transferencia' && c.id === t.conta_destino_id) {
+        return { ...c, saldo: c.saldo - t.valor };
+      }
+      return c;
+    }));
+  };
+  const toggleAgendada = (id) => {
+    setAgendadas(a => a.map(x => x.id === id ? { ...x, ativa: !x.ativa } : x));
+  };
+
+  const state = { transacoes, contas, orcamentos, agendadas, dividas, theme: tweaks.theme };
+  const actions = { saveTx, delTx, toggleAgendada, goto: setPage, setTheme: (t) => setTweaks('theme', t) };
+
+  const t = TITLES[page];
+
+  return (
+    <div className="shell">
+      <aside className="rail">
+        <div className="brand" title="Despesas"><span className="brand-mark">€</span></div>
+        <nav>
+          {NAV.map(n => (
+            <button key={n.id} className={'rail-btn' + (page === n.id ? ' active' : '')} onClick={() => setPage(n.id)}>
+              <Icon name={n.icon} size={18}/>
+              <span>{n.label}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="rail-footer">
+          <button className="rail-btn" onClick={() => setTweaks('theme', tweaks.theme === 'dark' ? 'light' : 'dark')}>
+            <Icon name={tweaks.theme === 'dark' ? 'sun' : 'moon'} size={18}/>
+            <span>{tweaks.theme === 'dark' ? 'Light' : 'Dark'}</span>
+          </button>
+        </div>
+      </aside>
+
+      <main className="main" data-screen-label={t.title}>
+        {page === 'home' ? (
+          <MarketingPage actions={actions}/>
+        ) : (
+          <>
+            <div className="topbar">
+              <div>
+                <div className="eyebrow">{t.eyebrow}</div>
+                <h1 className="page-title">{t.title}</h1>
+              </div>
+              <div className="topbar-right">
+                <span>local · sqlite</span>
+                <span>·</span>
+                <span className="mono">v1.0</span>
+              </div>
+            </div>
+            {page === 'visao-geral' && <VisaoGeralPage state={state} actions={actions}/>}
+            {page === 'transacoes' && <TransacoesPage state={state} actions={actions}/>}
+            {page === 'agendadas' && <AgendadasPage state={state} actions={actions}/>}
+            {page === 'contas' && <ContasPage state={state} actions={actions}/>}
+            {page === 'orcamentos' && <OrcamentosPage state={state} actions={actions}/>}
+            {page === 'dividas' && <DividasPage state={state} actions={actions}/>}
+            {page === 'graficos' && <GraficosPage state={state} actions={actions}/>}
+            {page === 'calendario' && <CalendarioPage state={state} actions={actions}/>}
+            {page === 'preferencias' && <PreferenciasPage state={state} actions={actions}/>}
+          </>
+        )}
+      </main>
+
+      {window.TweaksPanel && (
+        <window.TweaksPanel title="Tweaks">
+          <window.TweakSection title="Aparência">
+            <window.TweakRadio label="Tema" value={tweaks.theme} onChange={v => setTweaks('theme', v)} options={[{value:'dark', label:'Dark'}, {value:'light', label:'Light'}]}/>
+            <window.TweakColor label="Cor de destaque" value={tweaks.accent} onChange={v => setTweaks('accent', v)}/>
+          </window.TweakSection>
+        </window.TweaksPanel>
+      )}
+    </div>
+  );
+}
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const n = parseInt(h, 16);
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

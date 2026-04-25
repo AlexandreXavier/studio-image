@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="pt-PT" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Despesas × Xani — Print</title>
+<link rel="stylesheet" href="xani-tokens.css"/>
+<link rel="stylesheet" href="app.css"/>
+<style>
+  html, body { background: var(--fill); }
+  body { margin: 0; }
+
+  /* Each page is an A4-landscape-sized canvas */
+  .print-page {
+    width: 1180px;
+    min-height: 820px;
+    margin: 0 auto 40px;
+    padding: 24px 40px 40px;
+    background: var(--fill);
+    box-sizing: border-box;
+    position: relative;
+    border-bottom: 1px dashed var(--border);
+  }
+  .print-page .label {
+    position: absolute;
+    top: 12px; right: 40px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .print-topbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+  }
+  .print-topbar .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .print-topbar h1 {
+    font-family: var(--font-display);
+    font-size: 48px;
+    line-height: 0.95;
+    margin: 0;
+    letter-spacing: 0.01em;
+    color: var(--fg1);
+  }
+  .print-topbar .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg3);
+  }
+
+  /* Cover page */
+  .cover {
+    min-height: 820px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 60px 80px;
+  }
+  .cover .kicker {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .cover h1 {
+    font-family: var(--font-display);
+    font-size: 160px;
+    line-height: 0.88;
+    margin: 40px 0;
+    letter-spacing: 0.01em;
+  }
+  .cover h1 i { color: var(--accent); }
+  .cover .lead {
+    font-size: 18px;
+    color: var(--fg2);
+    max-width: 640px;
+    line-height: 1.5;
+  }
+  .cover .meta-row {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px dashed var(--border);
+    padding-top: 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg3);
+    letter-spacing: 0.05em;
+  }
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: 40px;
+  }
+  .toc div {
+    padding: 14px 20px 14px 0;
+    border-bottom: 1px dashed var(--border);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .toc div:nth-child(odd) { padding-right: 40px; border-right: 1px dashed var(--border); }
+  .toc div:nth-child(even) { padding-left: 40px; }
+  .toc b { color: var(--accent); font-weight: 400; }
+
+  @media print {
+    @page { size: A3 landscape; margin: 0.4cm; }
+    html, body { background: var(--fill) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .print-page {
+      margin: 0;
+      border-bottom: 0;
+      break-after: page;
+      page-break-after: always;
+      width: 100%;
+      min-height: auto;
+    }
+    .print-page:last-child { break-after: auto; page-break-after: auto; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="data.js"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="pages-a.jsx"></script>
+<script type="text/babel" src="pages-b.jsx"></script>
+
+<script type="text/babel">
+const PAGES = [
+  { id: 'visao-geral',  eyebrow: '/ visão-geral',  title: 'Visão geral',   Comp: VisaoGeralPage },
+  { id: 'transacoes',   eyebrow: '/ transações',   title: 'Transações',    Comp: TransacoesPage },
+  { id: 'orcamentos',   eyebrow: '/ orçamentos',   title: 'Orçamentos',    Comp: OrcamentosPage },
+  { id: 'graficos',     eyebrow: '/ gráficos',     title: 'Gráficos',      Comp: GraficosPage },
+  { id: 'agendadas',    eyebrow: '/ agendadas',    title: 'Agendadas',     Comp: AgendadasPage },
+  { id: 'contas',       eyebrow: '/ contas',       title: 'Contas',        Comp: ContasPage },
+  { id: 'dividas',      eyebrow: '/ dívidas',      title: 'Dívidas',       Comp: DividasPage },
+  { id: 'calendario',   eyebrow: '/ calendário',   title: 'Calendário',    Comp: CalendarioPage },
+  { id: 'preferencias', eyebrow: '/ preferências', title: 'Preferências',  Comp: PreferenciasPage },
+];
+
+function noop(){}
+const actions = { saveTx: noop, delTx: noop, toggleAgendada: noop, goto: noop, setTheme: noop };
+
+function App() {
+  const state = {
+    transacoes: window.TRANSACOES,
+    contas: window.CONTAS,
+    orcamentos: window.ORCAMENTOS,
+    agendadas: window.AGENDADAS,
+    dividas: window.DIVIDAS,
+    theme: 'dark',
+  };
+
+  return (
+    <>
+      {/* Cover */}
+      <section className="print-page cover">
+        <div>
+          <div className="kicker">despesas · xani design system · pt-PT</div>
+          <h1>Despesas<br/><i>sem ruído.</i></h1>
+          <p className="lead">
+            Redesign de uma aplicação de finanças pessoais no estilo Xani — orange-on-navy,
+            tipografia Alumni Sans Pinstripe sobre Roboto, e linguagem visual quase tipográfica.
+            Esta é a compilação estática, página a página.
+          </p>
+          <div className="toc">
+            {PAGES.map((p, i) => (
+              <div key={p.id}><span><b>{String(i+1).padStart(2,'0')}</b> &nbsp; {p.title}</span><span style={{color:'var(--fg3)'}}>{p.eyebrow}</span></div>
+            ))}
+          </div>
+        </div>
+        <div className="meta-row">
+          <span>demo xani design · interactive prototype export</span>
+          <span>abril 2026</span>
+          <span>v1.0 — print edition</span>
+        </div>
+      </section>
+
+      {PAGES.map((p, i) => {
+        const { Comp } = p;
+        return (
+          <section key={p.id} className="print-page">
+            <span className="label">{String(i+1).padStart(2,'0')} · {p.id}</span>
+            <div className="print-topbar">
+              <div>
+                <div className="eyebrow">{p.eyebrow}</div>
+                <h1>{p.title}</h1>
+              </div>
+              <div className="meta">local · sqlite · v1.0</div>
+            </div>
+            <Comp state={state} actions={actions}/>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+// Auto-print once fonts + JSX are ready
+(async () => {
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch {}
+  await new Promise(r => setTimeout(r, 900));
+  window.print();
+})();
+</script>
+</body>
+</html>

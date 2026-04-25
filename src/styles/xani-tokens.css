@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Xani Design System — Colors & Type (adapted for Xani Image Studio)
+   ========================================================================== */
+
+/* ---------- Webfont: Alumni Sans Pinstripe (display) ---------- */
+@font-face {
+  font-family: "Alumni Sans Pinstripe";
+  src: url("/fonts/AlumniSansPinstripe-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alumni Sans Pinstripe";
+  src: url("/fonts/AlumniSansPinstripe-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Webfont: Roboto (brand, variable) ---------- */
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto-VariableFont_wdth_wght.ttf") format("truetype-variations"),
+       url("/fonts/Roboto-VariableFont_wdth_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto-Italic-VariableFont_wdth_wght.ttf") format("truetype-variations"),
+       url("/fonts/Roboto-Italic-VariableFont_wdth_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Theme Tokens: Light (default) ---------- */
+:root,
+[data-theme="light"] {
+  --color-fill-rgb:        251, 254, 251;
+  --color-text-base-rgb:   40, 39, 40;
+  --color-accent-rgb:      0, 108, 172;
+  --color-card-rgb:        230, 230, 230;
+  --color-card-muted-rgb:  205, 205, 205;
+  --color-border-rgb:      236, 233, 233;
+
+  --fill:        rgb(var(--color-fill-rgb));
+  --fg1:         rgb(var(--color-text-base-rgb));
+  --fg2:         rgba(var(--color-text-base-rgb), 0.8);
+  --fg3:         rgba(var(--color-text-base-rgb), 0.6);
+  --fg-inverted: rgb(var(--color-fill-rgb));
+  --accent:      rgb(var(--color-accent-rgb));
+  --accent-70:   rgba(var(--color-accent-rgb), 0.7);
+  --card:        rgb(var(--color-card-rgb));
+  --card-muted:  rgb(var(--color-card-muted-rgb));
+  --border:      rgb(var(--color-border-rgb));
+  --selection-bg: rgba(var(--color-accent-rgb), 0.7);
+  --selection-fg: rgb(var(--color-fill-rgb));
+}
+
+/* ---------- Theme Tokens: Dark ---------- */
+[data-theme="dark"] {
+  --color-fill-rgb:        33, 39, 55;
+  --color-text-base-rgb:   234, 237, 243;
+  --color-accent-rgb:      255, 107, 1;
+  --color-card-rgb:        52, 63, 96;
+  --color-card-muted-rgb:  138, 51, 2;
+  --color-border-rgb:      171, 75, 8;
+}
+
+/* ---------- Typography ---------- */
+:root {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-display: "Alumni Sans Pinstripe", "Roboto", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+
+  --fs-xs:   0.75rem;
+  --fs-sm:   0.875rem;
+  --fs-base: 1rem;
+  --fs-lg:   1.125rem;
+  --fs-xl:   1.25rem;
+  --fs-2xl:  1.5rem;
+  --fs-3xl:  1.875rem;
+  --fs-5xl:  3rem;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--fill);
+  color: var(--fg1);
+  font-feature-settings: "tnum" 1;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}

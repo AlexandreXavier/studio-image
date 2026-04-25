@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
+import ConvertEditor from '../components/ConvertEditor.tsx';
+---
+<Layout title="Convert - Xani Image Studio">
+  <Header client:load />
+  <main>
+    <ConvertEditor client:load />
+  </main>
+  <Footer />
+</Layout>

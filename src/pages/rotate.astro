@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
+import RotateEditor from '../components/RotateEditor.tsx';
+---
+<Layout title="Rotate & Flip - Xani Image Studio">
+  <Header client:load />
+  <main>
+    <RotateEditor client:load />
+  </main>
+  <Footer />
+</Layout>

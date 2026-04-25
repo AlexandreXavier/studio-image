@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
+import CompressEditor from '../components/CompressEditor.tsx';
+---
+<Layout title="Compress - Xani Image Studio">
+  <Header client:load />
+  <main>
+    <CompressEditor client:load />
+  </main>
+  <Footer />
+</Layout>

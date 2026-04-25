@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
+import ResizeEditor from '../components/ResizeEditor.tsx';
+---
+<Layout title="Resize - Xani Image Studio">
+  <Header client:load />
+  <main>
+    <ResizeEditor client:load />
+  </main>
+  <Footer />
+</Layout>

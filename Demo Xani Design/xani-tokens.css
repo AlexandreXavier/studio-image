@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Xani Design System — Colors & Type
+   Source: AlexandreXavier/xani src/styles/base.css + tailwind.config.cjs
+   Typography: Alumni Sans Pinstripe (display) + Roboto (brand) + system mono (code).
+   ========================================================================== */
+
+/* ---------- Webfont: Alumni Sans Pinstripe (display) ---------- */
+/* Tall, narrow, pinstripe-detailed — h1 / feature headlines only. */
+@font-face {
+  font-family: "Alumni Sans Pinstripe";
+  src: url("fonts/AlumniSansPinstripe-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Alumni Sans Pinstripe";
+  src: url("fonts/AlumniSansPinstripe-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Webfont: Roboto (brand, variable) ---------- */
+/* Variable fonts cover the full 100–900 weight & 75–100 width ranges. */
+@font-face {
+  font-family: "Roboto";
+  src: url("fonts/Roboto-VariableFont_wdth_wght.ttf") format("truetype-variations"),
+       url("fonts/Roboto-VariableFont_wdth_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("fonts/Roboto-Italic-VariableFont_wdth_wght.ttf") format("truetype-variations"),
+       url("fonts/Roboto-Italic-VariableFont_wdth_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Theme Tokens: Light (default) ---------- */
+:root,
+[data-theme="light"] {
+  /* Raw RGB triplets (matches xani base.css convention) */
+  --color-fill-rgb:        251, 254, 251;  /* near-white, faintly green */
+  --color-text-base-rgb:   40, 39, 40;     /* almost-black */
+  --color-accent-rgb:      0, 108, 172;    /* Astro-ish blue */
+  --color-card-rgb:        230, 230, 230;  /* light gray surface */
+  --color-card-muted-rgb:  205, 205, 205;  /* slightly darker */
+  --color-border-rgb:      236, 233, 233;  /* hairline */
+
+  /* Semantic color tokens */
+  --fill:        rgb(var(--color-fill-rgb));
+  --fg1:         rgb(var(--color-text-base-rgb));
+  --fg2:         rgba(var(--color-text-base-rgb), 0.8);
+  --fg3:         rgba(var(--color-text-base-rgb), 0.6);
+  --fg-inverted: rgb(var(--color-fill-rgb));
+  --accent:      rgb(var(--color-accent-rgb));
+  --accent-70:   rgba(var(--color-accent-rgb), 0.7);
+  --card:        rgb(var(--color-card-rgb));
+  --card-muted:  rgb(var(--color-card-muted-rgb));
+  --border:      rgb(var(--color-border-rgb));
+  --selection-bg: rgba(var(--color-accent-rgb), 0.7);
+  --selection-fg: rgb(var(--color-fill-rgb));
+}
+
+/* ---------- Theme Tokens: Dark ---------- */
+[data-theme="dark"] {
+  --color-fill-rgb:        33, 39, 55;     /* deep navy */
+  --color-text-base-rgb:   234, 237, 243;  /* off-white */
+  --color-accent-rgb:      255, 107, 1;    /* xani orange */
+  --color-card-rgb:        52, 63, 96;     /* dusty blue */
+  --color-card-muted-rgb:  138, 51, 2;     /* burnt orange */
+  --color-border-rgb:      171, 75, 8;     /* orange edge */
+}
+
+/* ---------- Typography ---------- */
+:root {
+  /* Roboto is the brand family — used for UI, prose, headings, everything. */
+  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Helvetica, Arial, sans-serif;
+  /* Display face — h1 hero & feature headlines only. */
+  --font-display: "Alumni Sans Pinstripe", "Roboto", sans-serif;
+  /* Mono reserved for <code>, <pre>, datetime chips. */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+
+  /* Type scale (derived from hero h1 = 3xl/5xl and prose defaults) */
+  --fs-xs:   0.75rem;   /* 12 */
+  --fs-sm:   0.875rem;  /* 14 */
+  --fs-base: 1rem;      /* 16 */
+  --fs-lg:   1.125rem;  /* 18 */
+  --fs-xl:   1.25rem;   /* 20 — logo */
+  --fs-2xl:  1.5rem;    /* 24 — section h2 */
+  --fs-3xl:  1.875rem;  /* 30 — hero h1 (mobile) */
+  --fs-5xl:  3rem;      /* 48 — hero h1 (desktop) */
+
+  --lh-tight:   1.2;
+  --lh-snug:    1.4;
+  --lh-normal:  1.6;
+  --lh-relaxed: 1.75;
+
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+
+  --tracking-wide: 0.025em;
+}
+
+/* ---------- Spacing / Radius / Shadow ---------- */
+:root {
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+
+  /* Max content width (section max-w-3xl) */
+  --content-max: 48rem;
+
+  /* Radii — xani is mostly sharp; small rounding only on dropdowns */
+  --radius-none: 0;
+  --radius-sm:   0.125rem;
+  --radius-md:   0.375rem; /* dropdown menu */
+
+  /* Shadows — xani uses almost none; the one present is the dropdown */
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+               0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Focus outline */
+  --outline-offset: 1px;
+  --outline-width:  2px;
+
+  /* Underline style (used everywhere: dashed + wavy for active nav) */
+  --underline-offset: 4px;
+  --underline-offset-lg: 8px;
+}
+
+/* ---------- Base element semantics ---------- */
+html { overflow-y: scroll; }
+
+body {
+  background-color: var(--fill);
+  color: var(--fg1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  min-height: 100svh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-tight);
+  letter-spacing: .01em;
+  margin: 1rem 0;
+}
+@media (min-width: 640px) {
+  h1 { font-size: 4.5rem; margin: 2rem 0; }
+}
+h2 {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tracking-wide);
+}
+h3 {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  font-style: italic;
+}
+
+p, li { line-height: var(--lh-relaxed); }
+
+a {
+  color: var(--fg1);
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: var(--underline-offset-lg);
+}
+a:hover { color: var(--accent); }
+a.active {
+  text-decoration-style: wavy;
+  text-decoration-thickness: 2px;
+  text-underline-offset: var(--underline-offset);
+}
+
+code {
+  font-family: var(--font-mono);
+  background-color: rgba(var(--color-card-rgb), 0.75);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+pre > code { white-space: pre; background: transparent; padding: 0; }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 0; }
+
+blockquote {
+  border-left: 4px solid var(--accent);
+  border-left-color: var(--accent-70);
+  opacity: 0.85;
+  padding-left: var(--space-4);
+  margin-left: 0;
+  font-style: italic;
+}
+
+/* ---------- Utility ---------- */
+.display { font-family: var(--font-display); }
+.sans { font-family: var(--font-sans); }
+.mono { font-family: var(--font-mono); }
+.fg1 { color: var(--fg1); }
+.fg2 { color: var(--fg2); }
+.fg3 { color: var(--fg3); }
+.accent-fg { color: var(--accent); }
+.accent-bg { background-color: var(--accent); color: var(--fg-inverted); }
+.card { background-color: var(--card); }
+.card-muted { background-color: var(--card-muted); }
+.border-line { border: 1px solid var(--border); }
+
+.focus-outline:focus-visible {
+  outline: var(--outline-width) dashed var(--accent);
+  outline-offset: var(--outline-offset);
+  text-decoration: none;
+}
