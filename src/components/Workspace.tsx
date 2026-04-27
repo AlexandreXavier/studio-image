@@ -38,6 +38,7 @@ export default function Workspace() {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [scale, setScale] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [cropRect, setCropRect] = useState<{ x: number; y: number; w: number; h: number }>({ x: 10, y: 10, w: 80, h: 80 });
 
   // Load initial image (restore workspace state if available)
   useEffect(() => {
@@ -135,7 +136,7 @@ export default function Workspace() {
   const renderToolPanel = () => {
     if (!canvas) return null;
     switch (activeTool) {
-      case 'crop': return <CropToolPanel canvas={canvas} onApply={(c) => handleApplyTool(c, 'Crop')} />;
+      case 'crop': return <CropToolPanel canvas={canvas} crop={cropRect} onApply={(c) => handleApplyTool(c, 'Crop')} />;
       case 'resize': return <ResizeToolPanel canvas={canvas} onApply={(c) => handleApplyTool(c, 'Resize')} />;
       case 'convert': return <PlaceholderToolPanel name="Convert" />;
       case 'compress': return <PlaceholderToolPanel name="Compress" />;
@@ -168,7 +169,7 @@ export default function Workspace() {
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
           <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            <CanvasArea canvas={canvas} scale={scale} />
+            <CanvasArea canvas={canvas} scale={scale} showCropOverlay={activeTool === 'crop'} cropRect={cropRect} onCropChange={setCropRect} />
           </div>
           {renderToolPanel()}
         </div>

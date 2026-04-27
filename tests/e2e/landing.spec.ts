@@ -34,10 +34,17 @@ test.describe('restructured landing page', () => {
   });
 
   test('theme toggle works on landing page', async ({ page }) => {
+    // Force light to avoid headless browser defaulting to dark
+    await page.evaluate(() => {
+      localStorage.setItem('xani_theme', 'light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    });
+    await page.reload();
+    await page.waitForTimeout(300);
+
     const html = page.locator('html');
     await expect(html).toHaveAttribute('data-theme', 'light');
 
-    await page.waitForTimeout(300);
     await page.locator('button[aria-label="Toggle theme"]').click();
     await expect(html).toHaveAttribute('data-theme', 'dark');
   });

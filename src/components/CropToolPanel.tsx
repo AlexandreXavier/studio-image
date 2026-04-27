@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Props {
   canvas: HTMLCanvasElement;
   onApply: (newCanvas: HTMLCanvasElement) => void;
+  crop?: { x: number; y: number; w: number; h: number };
 }
 
-export default function CropToolPanel({ canvas, onApply }: Props) {
-  const [crop, setCrop] = useState({ x: 0, y: 0, w: Math.min(100, canvas.width), h: Math.min(100, canvas.height) });
+export default function CropToolPanel({ canvas, onApply, crop: cropProp }: Props) {
+  const defaultCrop = cropProp || { x: 0, y: 0, w: Math.min(100, canvas.width), h: Math.min(100, canvas.height) };
+  const [crop, setCrop] = useState(defaultCrop);
+
+  useEffect(() => {
+    if (cropProp) setCrop(cropProp);
+  }, [cropProp]);
 
   const apply = () => {
     const c = document.createElement('canvas');
