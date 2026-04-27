@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function seedImage(page: any) {
-  await page.goto('/');
+  await page.goto('/crop');
   await page.evaluate(() => {
     localStorage.setItem('xani_image', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
   });
@@ -11,8 +11,6 @@ async function seedImage(page: any) {
 test.describe('crop editor', () => {
   test('loads crop page after upload', async ({ page }) => {
     await seedImage(page);
-    await page.locator('.tool-card').nth(0).click(); // Crop
-    await page.waitForURL('**/crop');
     await expect(page.locator('text=Crop Image')).toBeVisible();
   });
 
@@ -63,13 +61,13 @@ test.describe('pipeline', () => {
     await page.goto('/crop');
     await page.waitForTimeout(300);
 
-    // Apply crop
+    // Apply crop returns to home
     await page.locator('text=Apply & Continue').click();
     await page.waitForURL('**/');
 
-    // Go to resize
-    await page.locator('.tool-card').nth(1).click(); // Resize
-    await page.waitForURL('**/resize');
+    // Navigate directly to resize (old pages still exist)
+    await page.goto('/resize');
+    await page.waitForTimeout(300);
     await expect(page.locator('text=Resize Image')).toBeVisible();
   });
 });
@@ -83,7 +81,7 @@ test.describe('reset', () => {
     await page.locator('text=Reset').click();
     await page.waitForURL('**/');
 
-    const cards = page.locator('.tool-card');
-    await expect(cards.nth(0)).toHaveClass(/disabled/);
+    // On new landing page, verify we're back home (AI button is disabled as proxy)
+    await expect(page.locator('[data-testid="ai-generator"]')).toBeDisabled();
   });
 });

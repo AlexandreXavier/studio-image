@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EditorHeader from '../components/EditorHeader.tsx';
+import Workspace from '../components/Workspace.tsx';
+---
+<Layout title="Xani Image Studio — Editor">
+  <EditorHeader client:load />
+  <main style="padding: 0;">
+    <Workspace client:load />
+  </main>
+</Layout>

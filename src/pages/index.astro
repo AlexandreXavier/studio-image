@@ -2,12 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.tsx';
 import Footer from '../components/Footer.tsx';
-import HomePage from '../components/HomePage.tsx';
+import LandingPage from '../components/LandingPage.tsx';
 ---
 <Layout title="Xani Image Studio">
   <Header client:load />
   <main class="container" style="padding-top: 32px; padding-bottom: 32px;">
-    <HomePage client:load />
+    <LandingPage client:load />
   </main>
   <Footer />
 </Layout>

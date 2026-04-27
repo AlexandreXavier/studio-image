@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('theme toggle', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await page.evaluate(() => localStorage.removeItem('xani_theme'));
+    await page.reload();
   });
 
   test('toggles dark mode', async ({ page }) => {
@@ -15,6 +17,7 @@ test.describe('theme toggle', () => {
   });
 
   test('persists after reload', async ({ page }) => {
+    await page.waitForTimeout(300);
     await page.locator('button[aria-label="Toggle theme"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
